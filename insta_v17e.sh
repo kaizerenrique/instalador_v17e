@@ -25,7 +25,7 @@ IS_ENTERPRISE="True"
 # Instala postgreSQL V14 en lugar de los valores predeterminados (por ejemplo, V12 para Ubuntu 20/22): esto mejora el rendimiento.
 INSTALL_POSTGRESQL_FOURTEEN="True"
 # ¡Establezca esto en Verdadero si desea instalar Nginx!
-INSTALL_NGINX="True"
+INSTALL_NGINX="False"
 # Establezca la contraseña de superadministrador: si GENERATE_RANDOM_PASSWORD está configurado en "Verdadero", generaremos automáticamente una contraseña aleatoria; de lo contrario, usaremos esta
 OE_SUPERADMIN="admin"
 # Establezca en "Verdadero" para generar una contraseña aleatoria, "Falso" para usar la variable en OE_SUPERADMIN
