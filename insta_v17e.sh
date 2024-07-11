@@ -21,7 +21,7 @@ OE_PORT="8069"
 # ¡IMPORTANTE! Este script contiene bibliotecas adicionales que se necesitan específicamente para Odoo 17.0
 OE_VERSION="17.0"
 # ¡Establezca esto en Verdadero si desea instalar la versión empresarial de Odoo!
-IS_ENTERPRISE="False"
+IS_ENTERPRISE="True"
 # Instala postgreSQL V14 en lugar de los valores predeterminados (por ejemplo, V12 para Ubuntu 20/22): esto mejora el rendimiento.
 INSTALL_POSTGRESQL_FOURTEEN="True"
 # ¡Establezca esto en Verdadero si desea instalar Nginx!
@@ -36,7 +36,7 @@ WEBSITE_NAME="_"
 # Configure el puerto de sondeo largo predeterminado de Odoo (aún debe usar -c /etc/odoo-server.conf, por ejemplo, para usar esto).
 LONGPOLLING_PORT="8072"
 # Establezca en "Verdadero" para instalar certbot y tener SSL habilitado, "Falso" para usar http
-ENABLE_SSL="True"
+ENABLE_SSL="False"
 # Proporcione un correo electrónico para registrar el certificado SSL
 ADMIN_EMAIL="kayserenrique@gmail.com"
 ##
