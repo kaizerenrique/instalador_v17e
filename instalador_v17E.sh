@@ -15,6 +15,7 @@ VCODE=17
 VERSION=17.0
 OCA_VERSION=17.0
 PORT=8069
+LONGPOLLING_PORT="8072"
 DEPTH=1
 SERVICE_NAME=odoo17_dev
 PROJECT_NAME=odoo17_dev
@@ -23,6 +24,7 @@ PATHBASE=/opt/$PROJECT_NAME
 PATH_LOG=$PATHBASE/log
 PATHREPOS=$PATHBASE/extra-addons
 PATHREPOS_OCA=$PATHREPOS/oca
+PATHREPOS_ENT=$PATHREPOS/enterprise
 
 wk64=""
 wk32=""
@@ -114,11 +116,13 @@ sudo  -u postgres  createuser -s $usuario
 sudo mkdir $PATHBASE
 sudo mkdir $PATHREPOS
 sudo mkdir $PATHREPOS_OCA
+sudo mkdir $PATHREPOS_ENT
 sudo mkdir $PATH_LOG
 cd $PATHBASE
 # Download Odoo from git source
 sudo git clone https://github.com/odoo/odoo.git -b $VERSION --depth $DEPTH $PATHBASE/odoo
 sudo git clone https://github.com/oca/web.git -b $OCA_VERSION --depth $DEPTH $PATHREPOS_OCA/web
+sudo git clone https://github.com/kaizerenrique/enterprise.git --depth $DEPTH $PATHREPOS_ENT/addons
 
 
 #nodejs and less
@@ -181,7 +185,8 @@ proxy_mode = False
 addons_path =
     $PATHREPOS,
     #$PATHREPOS_OCA/web,
-    $PATHBASE/odoo/addons
+    $PATHBASE/odoo/addons,
+    $PATHREPOS_ENT/addons
 
 #################################################################
 " | sudo tee --append $PATHBASE/config/odoo$VCODE.conf
