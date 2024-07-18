@@ -38,7 +38,7 @@ LONGPOLLING_PORT="8072"
 # Establezca en "Verdadero" para instalar certbot y tener SSL habilitado, "Falso" para usar http
 ENABLE_SSL="False"
 # Proporcione un correo electrónico para registrar el certificado SSL
-ADMIN_EMAIL="kayserenrique@gmail.com"
+ADMIN_EMAIL="proyectocharlie99@gmail.com"
 ##
 ### Enlaces de descarga WKHTMLTOPDF
 ## === Ubuntu Trusty x64 y x32 === (para otras distribuciones, reemplace estos dos enlaces,
@@ -144,15 +144,17 @@ sudo chown $OE_USER:$OE_USER /var/log/$OE_USER
 echo -e "\n==== Instalar ODOO Server ===="
 sudo git clone --depth 1 --branch $OE_VERSION https://www.github.com/odoo/odoo $OE_HOME_EXT/
 
+echo -e "\n---- Create custom module directory ----"
+sudo su $OE_USER -c "mkdir $OE_HOME/custom"
+sudo su $OE_USER -c "mkdir $OE_HOME/custom/addons"
+
 if [ $IS_ENTERPRISE = "True" ]; then
     # Odoo Enterprise !
     sudo pip3 install psycopg2-binary pdfminer.six
     echo -e "\n--- Create symlink for node"
     sudo ln -s /usr/bin/nodejs /usr/bin/node
-    sudo su $OE_USER -c "mkdir $OE_HOME/enterprise"
-    sudo su $OE_USER -c "mkdir $OE_HOME/enterprise/addons"
 
-    GITHUB_RESPONSE=$(sudo git clone --depth 1 https://github.com/kaizerenrique/enterprise.git "$OE_HOME/enterprise/addons" 2>&1)
+    GITHUB_RESPONSE=$(sudo git clone --depth 1 https://github.com/kaizerenrique/extra-addons.git "$OE_HOME/custom/addons" 2>&1)
     
 
     echo -e "\n---- Added Enterprise code under $OE_HOME/enterprise/addons ----"
@@ -161,10 +163,6 @@ if [ $IS_ENTERPRISE = "True" ]; then
     sudo npm install -g less
     sudo npm install -g less-plugin-clean-css
 fi
-
-echo -e "\n---- Create custom module directory ----"
-sudo su $OE_USER -c "mkdir $OE_HOME/custom"
-sudo su $OE_USER -c "mkdir $OE_HOME/custom/addons"
 
 echo -e "\n---- Setting permissions on home folder ----"
 sudo chown -R $OE_USER:$OE_USER $OE_HOME/*
