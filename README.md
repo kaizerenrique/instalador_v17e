@@ -22,3 +22,18 @@ Hay algunas cosas que puedes configurar, esta es la lista más utilizada:<br/>
 ```ENABLE_SSL``` Establezca esto en ```True``` instalar [certbot](https://github.com/certbot/certbot) y configurar nginx con https usando un certificado gratuito Let's Encrypted<br/>
 ```ADMIN_EMAIL``` Se necesita una dirección de correo electrónico para registrarse en Let's Encrypt. Reemplace el marcador de posición predeterminado con una dirección de correo electrónico de su organización.<br/>
 ```INSTALL_NGINX``` y ```ENABLE_SSL``` debe estar configurado en ```True``` y el marcador de posición en ```ADMIN_EMAIL``` Debe reemplazarse con una dirección de correo electrónico válida para la instalación de certbot<br/>
+
+##### 3. Comando para editar el archivo 
+```
+sudo nano insta_v17e.sh
+```
+
+##### 4. Hacer que el script sea ejecutable
+```
+sudo chmod +x insta_v17e.sh
+```
+
+##### 5. Ejecutar el script
+```
+sudo ./insta_v17e.sh
+```
