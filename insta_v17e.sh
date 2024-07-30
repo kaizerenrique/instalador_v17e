@@ -5,9 +5,9 @@
 # Este script instalará Odoo en su servidor Ubuntu. Puede instalar múltiples instancias de Odoo.
 # en un Ubuntu debido a los diferentes xmlrpc_ports
 #-------------------------------------------------------------------------------# 
-# sudo nano odoo-install.sh 
-# sudo chmod +x odoo-install.sh 
-# ./odoo-install
+# sudo nano insta_v17e.sh 
+# sudo chmod +x insta_v17e.sh 
+# ./insta_v17e
 ################################################################################
 
 OE_USER="odoo"
