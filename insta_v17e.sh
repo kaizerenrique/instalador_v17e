@@ -144,25 +144,35 @@ sudo chown $OE_USER:$OE_USER /var/log/$OE_USER
 echo -e "\n==== Instalar ODOO Server ===="
 sudo git clone --depth 1 --branch $OE_VERSION https://www.github.com/odoo/odoo $OE_HOME_EXT/
 
-echo -e "\n---- Create custom module directory ----"
-sudo su $OE_USER -c "mkdir $OE_HOME/custom"
-sudo su $OE_USER -c "mkdir $OE_HOME/custom/addons"
-
 if [ $IS_ENTERPRISE = "True" ]; then
-    # Odoo Enterprise !
+    # Odoo Enterprise install!
     sudo pip3 install psycopg2-binary pdfminer.six
     echo -e "\n--- Create symlink for node"
     sudo ln -s /usr/bin/nodejs /usr/bin/node
+    sudo su $OE_USER -c "mkdir $OE_HOME/enterprise"
+    sudo su $OE_USER -c "mkdir $OE_HOME/enterprise/addons"
 
-    GITHUB_RESPONSE=$(sudo git clone --depth 1 https://github.com/kaizerenrique/extra-addons.git "$OE_HOME/custom/addons" 2>&1)
-    
+    GITHUB_RESPONSE=$(sudo git clone --depth 1 --branch $OE_VERSION https://www.github.com/odoo/enterprise "$OE_HOME/enterprise/addons" 2>&1)
+    while [[ $GITHUB_RESPONSE == *"Authentication"* ]]; do
+        echo "------------------------ADVERTENCIA------------------------------"
+        echo "¡Tu autenticación con Github ha fallado! Inténtalo de nuevo."
+        printf "Para clonar e instalar la versión empresarial de Odoo, debe ser un socio oficial de Odoo y necesita acceso. to\nhttp://github.com/odoo/enterprise.\n"
+        echo "SUGERENCIA: Presione Ctrl+C para detener este script.s"
+        echo "-------------------------------------------------------------"
+        echo " "
+        GITHUB_RESPONSE=$(sudo git clone --depth 1 --branch $OE_VERSION https://www.github.com/odoo/enterprise "$OE_HOME/enterprise/addons" 2>&1)
+    done
 
-    echo -e "\n---- Added Enterprise code under $OE_HOME/custom/addons ----"
+    echo -e "\n---- Added Enterprise code under $OE_HOME/enterprise/addons ----"
     echo -e "\n---- Installing Enterprise specific libraries ----"
     sudo -H pip3 install num2words ofxparse dbfread ebaysdk firebase_admin pyOpenSSL
     sudo npm install -g less
     sudo npm install -g less-plugin-clean-css
 fi
+
+echo -e "\n---- Create custom module directory ----"
+sudo su $OE_USER -c "mkdir $OE_HOME/custom"
+sudo su $OE_USER -c "mkdir $OE_HOME/custom/addons"
 
 echo -e "\n---- Setting permissions on home folder ----"
 sudo chown -R $OE_USER:$OE_USER $OE_HOME/*
@@ -185,8 +195,11 @@ else
 fi
 sudo su root -c "printf 'logfile = /var/log/${OE_USER}/${OE_CONFIG}.log\n' >> /etc/${OE_CONFIG}.conf"
 
-sudo su root -c "printf 'addons_path=${OE_HOME_EXT}/addons,${OE_HOME}/custom/addons\n' >> /etc/${OE_CONFIG}.conf"
-
+if [ $IS_ENTERPRISE = "True" ]; then
+    sudo su root -c "printf 'addons_path=${OE_HOME}/enterprise/addons,${OE_HOME_EXT}/addons\n' >> /etc/${OE_CONFIG}.conf"
+else
+    sudo su root -c "printf 'addons_path=${OE_HOME_EXT}/addons,${OE_HOME}/custom/addons\n' >> /etc/${OE_CONFIG}.conf"
+fi
 sudo chown $OE_USER:$OE_USER /etc/${OE_CONFIG}.conf
 sudo chmod 640 /etc/${OE_CONFIG}.conf
 
@@ -196,7 +209,7 @@ sudo su root -c "echo 'sudo -u $OE_USER $OE_HOME_EXT/odoo-bin --config=/etc/${OE
 sudo chmod 755 $OE_HOME_EXT/start.sh
 
 #--------------------------------------------------
-# Adding ODOO as a deamon (initscript)
+# Agregar ODOO como demonio (script de inicio)
 #--------------------------------------------------
 
 echo -e "* Create init file"
@@ -275,7 +288,7 @@ echo -e "* Start ODOO on Startup"
 sudo update-rc.d $OE_CONFIG defaults
 
 #--------------------------------------------------
-# Install Nginx if needed
+# Instalar Nginx si es necesario
 #--------------------------------------------------
 if [ $INSTALL_NGINX = "True" ]; then
   echo -e "\n---- Installing and setting up Nginx ----"
@@ -366,7 +379,7 @@ else
 fi
 
 #--------------------------------------------------
-# Enable ssl with certbot
+# Habilitar SSL con certbot
 #--------------------------------------------------
 
 if [ $INSTALL_NGINX = "True" ] && [ $ENABLE_SSL = "True" ] && [ $ADMIN_EMAIL != "odoo@example.com" ]  && [ $WEBSITE_NAME != "_" ];then
@@ -388,7 +401,7 @@ else
   fi
 fi
 
-echo -e "* Starting Odoo Service"
+echo -e "* Iniciando el servicio Odoo"
 sudo su root -c "/etc/init.d/$OE_CONFIG start"
 echo "-----------------------------------------------------------"
 echo "Done! The Odoo server is up and running. Specifications:"
