@@ -20,8 +20,6 @@ INSTALL_WKHTMLTOPDF="True"
 OE_PORT="8069"
 # ¡IMPORTANTE! Este script contiene bibliotecas adicionales que se necesitan específicamente para Odoo 17.0
 OE_VERSION="17.0"
-# ¡Establezca esto en Verdadero si desea instalar la versión empresarial de Odoo!
-IS_ENTERPRISE="True"
 # Instala postgreSQL V14 en lugar de los valores predeterminados (por ejemplo, V12 para Ubuntu 20/22): esto mejora el rendimiento.
 INSTALL_POSTGRESQL_FOURTEEN="True"
 # ¡Establezca esto en Verdadero si desea instalar Nginx!
@@ -144,35 +142,18 @@ sudo chown $OE_USER:$OE_USER /var/log/$OE_USER
 echo -e "\n==== Instalar ODOO Server ===="
 sudo git clone --depth 1 --branch $OE_VERSION https://www.github.com/odoo/odoo $OE_HOME_EXT/
 
-if [ $IS_ENTERPRISE = "True" ]; then
-    # Odoo Enterprise install!
-    sudo pip3 install psycopg2-binary pdfminer.six
-    echo -e "\n--- Create symlink for node"
-    sudo ln -s /usr/bin/nodejs /usr/bin/node
-    sudo su $OE_USER -c "mkdir $OE_HOME/enterprise"
-    sudo su $OE_USER -c "mkdir $OE_HOME/enterprise/addons"
-
-    GITHUB_RESPONSE=$(sudo git clone --depth 1 --branch $OE_VERSION https://www.github.com/odoo/enterprise "$OE_HOME/enterprise/addons" 2>&1)
-    while [[ $GITHUB_RESPONSE == *"Authentication"* ]]; do
-        echo "------------------------ADVERTENCIA------------------------------"
-        echo "¡Tu autenticación con Github ha fallado! Inténtalo de nuevo."
-        printf "Para clonar e instalar la versión empresarial de Odoo, debe ser un socio oficial de Odoo y necesita acceso. to\nhttp://github.com/odoo/enterprise.\n"
-        echo "SUGERENCIA: Presione Ctrl+C para detener este script.s"
-        echo "-------------------------------------------------------------"
-        echo " "
-        GITHUB_RESPONSE=$(sudo git clone --depth 1 --branch $OE_VERSION https://www.github.com/odoo/enterprise "$OE_HOME/enterprise/addons" 2>&1)
-    done
-
-    echo -e "\n---- Added Enterprise code under $OE_HOME/enterprise/addons ----"
-    echo -e "\n---- Installing Enterprise specific libraries ----"
-    sudo -H pip3 install num2words ofxparse dbfread ebaysdk firebase_admin pyOpenSSL
-    sudo npm install -g less
-    sudo npm install -g less-plugin-clean-css
-fi
+sudo pip3 install psycopg2-binary pdfminer.six
+sudo ln -s /usr/bin/nodejs /usr/bin/node
+sudo -H pip3 install num2words ofxparse dbfread ebaysdk firebase_admin pyOpenSSL
+sudo npm install -g less
+sudo npm install -g less-plugin-clean-css
 
 echo -e "\n---- Create custom module directory ----"
 sudo su $OE_USER -c "mkdir $OE_HOME/custom"
 sudo su $OE_USER -c "mkdir $OE_HOME/custom/addons"
+
+sudo su $OE_USER -c "mkdir $OE_HOME/enterprise"
+sudo su $OE_USER -c "mkdir $OE_HOME/enterprise/addons"
 
 echo -e "\n---- Setting permissions on home folder ----"
 sudo chown -R $OE_USER:$OE_USER $OE_HOME/*
@@ -195,11 +176,9 @@ else
 fi
 sudo su root -c "printf 'logfile = /var/log/${OE_USER}/${OE_CONFIG}.log\n' >> /etc/${OE_CONFIG}.conf"
 
-if [ $IS_ENTERPRISE = "True" ]; then
-    sudo su root -c "printf 'addons_path=${OE_HOME}/enterprise/addons,${OE_HOME_EXT}/addons\n' >> /etc/${OE_CONFIG}.conf"
-else
-    sudo su root -c "printf 'addons_path=${OE_HOME_EXT}/addons,${OE_HOME}/custom/addons\n' >> /etc/${OE_CONFIG}.conf"
-fi
+sudo su root -c "printf 'addons_path=${OE_HOME_EXT}/addons,${OE_HOME}/custom/addons\n' >> /etc/${OE_CONFIG}.conf"
+sudo su root -c "printf 'addons_path=${OE_HOME}/enterprise/addons,${OE_HOME_EXT}/addons\n' >> /etc/${OE_CONFIG}.conf"
+
 sudo chown $OE_USER:$OE_USER /etc/${OE_CONFIG}.conf
 sudo chmod 640 /etc/${OE_CONFIG}.conf
 
