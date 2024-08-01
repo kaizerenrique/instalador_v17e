@@ -142,11 +142,11 @@ sudo chown $OE_USER:$OE_USER /var/log/$OE_USER
 echo -e "\n==== Instalar ODOO Server ===="
 sudo git clone --depth 1 --branch $OE_VERSION https://www.github.com/odoo/odoo $OE_HOME_EXT/
 
-sudo pip3 install psycopg2-binary pdfminer.six
-sudo ln -s /usr/bin/nodejs /usr/bin/node
-sudo -H pip3 install num2words ofxparse dbfread ebaysdk firebase_admin pyOpenSSL
-sudo npm install -g less
-sudo npm install -g less-plugin-clean-css
+# sudo pip3 install psycopg2-binary pdfminer.six
+# sudo ln -s /usr/bin/nodejs /usr/bin/node
+# sudo -H pip3 install num2words ofxparse dbfread ebaysdk firebase_admin pyOpenSSL
+# sudo npm install -g less
+# sudo npm install -g less-plugin-clean-css
 
 echo -e "\n---- Create custom module directory ----"
 sudo su $OE_USER -c "mkdir $OE_HOME/custom"
