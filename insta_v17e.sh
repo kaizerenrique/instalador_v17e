@@ -362,10 +362,11 @@ fi
 
 if [ $INSTALL_NGINX = "True" ] && [ $ENABLE_SSL = "True" ] && [ $ADMIN_EMAIL != "odoo@example.com" ]  && [ $WEBSITE_NAME != "_" ];then
   sudo apt-get update -y
-  sudo apt install snapd -y
-  sudo snap install core; snap refresh core
-  sudo snap install --classic certbot
-  sudo apt-get install python3-certbot-nginx -y
+#  sudo apt install snapd -y
+#  sudo snap install core; snap refresh core
+#  sudo snap install --classic certbot
+  sudo apt-get install certbot python3-certbot-nginx -y
+#  sudo apt-get install python3-certbot-nginx -y
   sudo certbot --nginx -d $WEBSITE_NAME --noninteractive --agree-tos --email $ADMIN_EMAIL --redirect
   sudo service nginx reload
   echo "SSL/HTTPS is enabled!"
